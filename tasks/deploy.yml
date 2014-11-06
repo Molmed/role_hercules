@@ -1,15 +1,23 @@
 # hercules/tasks/deploy.yml
 
+- name: distribute the hercules rpm from the host to the remote
+  copy: dest={{ hercules_tmp_path }}/{{ hercules_rpm_path|basename }} src={{ hercules_rpm_path }} follow=yes validate='test -e %s'
+  register: hercules_dist_rpm
+    
 - name: download hercules rpm from git
   get_url: url={{ hercules_git_url }}/archive/{{ hercules_git_release }}.rpm dest={{ hercules_tmp_path }}/hercules-{{ hercules_git_release }}.rpm sha256sum={{ hercules_git_release_sha256sum }}
   ignore_errors: True 
+  when: hercules_dist_rpm|failed
   register: hercules_git_rpm
 
-# If a RPM could not be obtained, build from source instead  
-- include: package.yml
-  when: hercules_git_rpm|failed
-  tags: package
-  
+- name: assert that we could obtain a hercules rpm
+  assert: 
+    that:
+      - hercules_dist_rpm|success or hercules_git_rpm|success
+      
 - name: install the hercules rpm
-  yum: name={{ hercules_tmp_path }}/hercules-{{ hercules_git_release }}.rpm state=present
+  yum: name={{ item }} state=present
+  with_first_found:
+    - "{{ hercules_tmp_path }}/{{ hercules_rpm_path|basename }}"
+    - "{{ hercules_tmp_path }}/hercules-{{ hercules_git_release }}.rpm"
   
