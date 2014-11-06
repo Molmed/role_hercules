@@ -1,7 +1,7 @@
 ---
 galaxy_info:
   author: Pontus Larsson
-  description: 
+  description: Hercules is a system for managing sequencing data in the context of a sequencing facility.
   company: SNP&SEQ Technology Platform, Dept. of Medical Sciences, Uppsala University, SWEDEN
   # Some suggested licenses:
   # - BSD (default)
