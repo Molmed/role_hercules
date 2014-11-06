@@ -1,0 +1,19 @@
+# hercules/tasks/package.yml
+
+- debug: msg="A RPM package could not be obtained from {{ hercules_git_url }} for release {{ hercules_git_release }}, will pull the source code and build the package"
+
+- name: pull the hercules git repo 
+  git: force=yes repo={{ hercules_git_url }}.git version={{ hercules_git_release }} update=yes dest={{ hercules_source_path }} 
+
+- name: package the hercules code to an rpm
+  command: chdir={{ hercules_source_path }} creates={{ hercules_tmp_path }}/hercules-{{ hercules_git_release }}.rpm sbt rpm:package-bin
+
+# This will not be robust in case several rpms exist in the same folder. Will that happen?
+- name: get the path to the built rpm
+  shell: creates={{ hercules_tmp_path }}/hercules-{{ hercules_git_release }}.rpm ls -1 {{ hercules_source_path }}/target/rpm/RPMS/noarch/hercules-*.rpm |head -n 1
+  register: rpm_package
+
+- name: hard link the built package to the tmp folder and rename according to release
+  file: src={{ item }} path={{ hercules_tmp_path }}/hercules-{{ hercules_git_release }}.rpm state=hard
+  with_items: rpm_package.stdout_lines
+

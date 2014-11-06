@@ -1,0 +1,23 @@
+# hercules/tasks/system.yml
+
+- name: install libselinux-python
+  yum: name=libselinux-python state=present
+
+- name: install jdk
+  yum: name={{ hercules_java_jdk }} state=present
+  
+- name: install git
+  yum: name=git state=present
+  
+- name: install rpm-build
+  yum: name=rpm-build state=present
+  
+- name: install redhat-rpm-config
+  yum: name=redhat-rpm-config state=present
+
+- name: download sbt
+  get_url: url={{ hercules_sbt_download_site }}/sbt-{{ hercules_sbt_version }}.rpm dest={{ hercules_tmp_path }}/sbt-{{ hercules_sbt_version }}.rpm sha256sum={{ hercules_sbt_sha256sum }} 
+  
+- name: install sbt
+  yum: name={{ hercules_tmp_path }}/sbt-{{ hercules_sbt_version }}.rpm state=present
+  

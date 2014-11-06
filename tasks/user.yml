@@ -1,0 +1,20 @@
+# hercules/tasks/setup_system.yml
+
+- name: set up hercules group
+  group: name={{ hercules_group }} state=present
+  
+- name: set up hercules user account
+  user: createhome=yes name={{ hercules_user }} group={{ hercules_group }} state=present 
+
+- name: create hercules tmp folder
+  file: path={{ hercules_tmp_path }} state=directory owner={{ hercules_user }} group={{ hercules_group }} mode=0770 
+  
+- name: create samplesheet folder
+  file: path={{ hercules_samplesheet_path }} state=directory recurse=yes owner={{ hercules_user }} group={{ hercules_group }} mode=0770 
+
+- name: create qc config folder
+  file: path={{ hercules_qcconfig_path }} state=directory recurse=yes owner={{ hercules_user }} group={{ hercules_group }} mode=0770 
+  
+- name: create program config folder
+  file: path={{ hercules_program_config_path }} state=directory recurse=yes owner={{ hercules_user }} group={{ hercules_group }} mode=0770 
+  
