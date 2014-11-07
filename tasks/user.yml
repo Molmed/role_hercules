@@ -7,5 +7,5 @@
   user: name={{ hercules_user.name }} comment="biotank hercules account" group={{ hercules_user.group }} uid={{ hercules_user.uid }} system=yes state=present 
 
 - name: create hercules tmp folder
-  file: path={{ hercules_tmp_path }} state=directory owner={{ hercules_user }} group={{ hercules_group }} mode=0770 
+  file: path={{ hercules_tmp_path }} state=directory owner={{ hercules_user.name }} group={{ hercules_user.group }} mode=0770 
   

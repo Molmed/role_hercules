@@ -1,5 +1,8 @@
 # hercules/tasks/system.yml
 
+- name: install libselinux-python
+  yum: name=libselinux-python state=present
+  
 - name: install git
   yum: name=git state=present
   
