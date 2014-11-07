@@ -1,0 +1,11 @@
+# hercules/tasks/setup_system.yml
+
+- name: set up hercules group
+  group: name={{ hercules_user.group }} gid={{ hercules_user.gid }} system=yes state=present
+  
+- name: set up hercules user account
+  user: name={{ hercules_user.name }} comment="biotank hercules account" group={{ hercules_user.group }} uid={{ hercules_user.uid }} system=yes state=present 
+
+- name: create hercules tmp folder
+  file: path={{ hercules_tmp_path }} state=directory owner={{ hercules_user.name }} group={{ hercules_user.group }} mode=0770 
+  

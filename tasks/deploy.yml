@@ -1,0 +1,32 @@
+# hercules/tasks/deploy.yml
+
+- name: download hercules rpm from git
+  get_url: url={{ hercules_git_url }}/archive/{{ hercules_git_release }}.rpm dest={{ hercules_tmp_path }}/hercules-{{ hercules_git_release }}.rpm sha256sum={{ hercules_git_release_sha256sum }}
+  ignore_errors: True 
+  register: hercules_git_rpm
+
+# TODO: if this copy command fails because src does not exist, the error is not ignored. Don't know if this is a bug in ansible or the expected behavior..
+- name: distribute the hercules rpm from the host to the remote
+  copy: dest={{ hercules_tmp_path }}/{{ hercules_rpm_path|basename }} src={{ hercules_rpm_path }} follow=yes
+  when: hercules_git_rpm|failed or hercules_git_rpm|skipped
+  ignore_errors: True
+  register: hercules_dist_rpm
+
+- name: assert that we could obtain a hercules rpm
+  assert: 
+    that:
+      - hercules_dist_rpm|success or hercules_git_rpm|success
+
+#TODO: this seems a bit overengineered but it should do for now
+- name: install the hercules rpm obtained from github
+  yum: name={{ item }} state=present
+  when: hercules_git_rpm|success
+  with_items: 
+    - "{{ hercules_tmp_path }}/hercules-{{ hercules_git_release }}.rpm"
+
+- name: install the hercules rpm obtained from host
+  yum: name={{ item }} state=present
+  when: hercules_dist_rpm|success
+  with_items: 
+    - "{{ hercules_tmp_path }}/{{ hercules_rpm_path|basename }}"
+      

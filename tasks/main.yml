@@ -1,0 +1,15 @@
+---
+# tasks file for hercules
+
+- include: user.yml
+  sudo: yes
+  tags: user
+
+- include: system.yml
+  sudo: yes
+  tags: system
+
+- include: deploy.yml
+  sudo: yes
+  tags: deploy
+  
