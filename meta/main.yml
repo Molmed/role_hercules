@@ -3,7 +3,7 @@ galaxy_info:
   author: Pontus Larsson
   description: Hercules is a system for managing sequencing data in the context of a sequencing facility.
   company: SNP&SEQ Technology Platform, Dept. of Medical Sciences, Uppsala University, SWEDEN
-  license: "license (MIT)"
+  license: "mit"
   min_ansible_version: 1.7
   platforms:
   - name: EL
