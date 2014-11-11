@@ -29,4 +29,7 @@
   when: hercules_dist_rpm|success
   with_items: 
     - "{{ hercules_tmp_path }}/{{ hercules_rpm_path|basename }}"
-      
+
+- template: src=hercules.j2 dest=/etc/hercules/application.conf
+  notify:
+    - restart hercules

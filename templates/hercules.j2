@@ -1,0 +1,132 @@
+#------------------------------------------------
+# Set the roles to start up on this machine
+#------------------------------------------------
+hercules {
+    roles = [ 
+    {% for role in hercules_roles %}
+      "{{ role }}",
+    {% endfor %}
+    ]   
+}
+
+#------------------------------------------------
+# Paths to programs and other general stuff
+#------------------------------------------------
+general {
+	sisyphusInstallLocation = {{ sisyphusInstallLocation }}
+  	sisyphusLogLocation = {{ sisyphusLogLocation }}  
+
+	runParameters = "runParameters.xml" 
+  	runFolderPath = [{% for path in runFolderPath %} "{{ path }}", {% endfor %}]
+  	samplesheetPath = {{ samplesheetPath }}
+  	customQCConfigurationFilesRoot = {{ customQCConfigurationFilesRoot  }}
+  	customProgramConfigFilesRoot = {{ customProgramConfigFilesRoot }}
+  	defaultQCConfigFile = {{ defaultQCConfigFile }}
+  	defaultProgramConfigFile = {{ defaultProgramConfigFile  }}
+  	# Seconds to wait before checking for runfolders again.
+  	checkForRunfoldersInterval = {{ checkForRunfoldersInterval }}
+}
+
+#------------------------------------------------
+# Settings for Hercules notifications 
+#------------------------------------------------
+notifications {
+  email {
+    sender = "{{ notification_from_adress }}"
+    recipients = [" {{ notification_to_adress }}"]
+    smtp_host = "{{ notification_smtp_host  }}"
+    smtp_port = {{ notification_smtp_port  }}
+    prefix = "[Hercules]"
+    channels = ["critical"]
+    retry_interval = 60
+    # 0 = infinite retries
+    num_retries = 0  
+  }  
+}
+
+#------------------------------------------------
+# General Akka settings
+#------------------------------------------------
+akka {
+
+	remote.netty.tcp.port=0
+	log-dead-letters = 1
+	actor.provider = "akka.cluster.ClusterActorRefProvider",
+    extensions = ["akka.contrib.pattern.ClusterReceptionistExtension"]
+    
+    # Log settings
+    #log-config-on-start = on
+    loggers = ["akka.event.slf4j.Slf4jLogger"]
+    loglevel = "DEBUG"
+    #logging-filter = "akka.event.slf4j.Slf4jLoggingFilter"
+    actor.debug.receive=on
+    
+    akka.persistence.snapshot-store.local.dir = "snapshots"        
+}
+
+#------------------------------------------------
+# Settings for the master
+#------------------------------------------------
+master {
+
+    akka {
+    
+	    remote.netty.tcp.port=2551
+	    remote.netty.tcp.hostname= {{ hercules_master_ip  }}  
+	    cluster.roles=["master"]
+	    
+	    cluster {
+	      seed-nodes = ["akka.tcp://ClusterSystem@{{hercules_master_ip }}:2551"]
+	      auto-down-unreachable-after = 10s
+	    }
+    }
+    
+    contact-points = ["akka.tcp://ClusterSystem@{{ hercules_master_ip }}:2551"]
+    
+    # How often to snapshot the actors state (note all messages will still
+    # be persisted, this is only to speed up the recovery).
+    snapshot.interval = 3600     
+}
+
+
+#------------------------------------------------
+# Default settings for the remote actors
+#------------------------------------------------
+remote.actors {
+    
+    akka {
+
+    # Make the port of the default remote actors start on a random port.
+    # Set to !0 to specify a specific port.
+    remote.netty.tcp.port=0
+    
+    }
+}
+
+#-----------------------------------------------------------
+# Settings specific to testing of actors
+#-----------------------------------------------------------
+test.actors {
+    
+    # Dispatcher to allow for asynchronous testing of blocked actor
+    test-dispatcher {
+        # Dispatcher is the name of the event-based dispatcher
+        type = Dispatcher
+        # What kind of ExecutionService to use
+        executor = "fork-join-executor"
+        # Configuration for the fork join pool
+        fork-join-executor {
+            # Min number of threads to cap factor-based parallelism number to
+            parallelism-min = 2
+            # Parallelism (threads) ... ceil(available processors * factor)
+            parallelism-factor = 2.0
+            # Max number of threads to cap factor-based parallelism number to
+            parallelism-max = 10
+        }
+        # Throughput defines the maximum number of messages to be
+        # processed per actor before the thread jumps to the next actor.
+        # Set to 1 for as fair as possible.
+        throughput = 10
+    }
+}
+
