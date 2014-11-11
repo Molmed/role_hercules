@@ -7,7 +7,7 @@
 
 # TODO: if this copy command fails because src does not exist, the error is not ignored. Don't know if this is a bug in ansible or the expected behavior..
 - name: distribute the hercules rpm from the host to the remote
-  copy: dest={{ hercules_tmp_path }}/{{ hercules_rpm_path|basename }} src={{ hercules_rpm_path }} follow=yes
+  copy: dest={{ hercules_tmp_path }}/{{ hercules_rpm_path|basename }} src={{ hercules_rpm_path }}
   when: hercules_git_rpm|failed or hercules_git_rpm|skipped
   ignore_errors: True
   register: hercules_dist_rpm
