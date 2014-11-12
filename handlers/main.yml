@@ -1,2 +1,4 @@
 ---
-# handlers file for hercules
+- name: restart hercules
+  service: name=hercules state=restarted
+
