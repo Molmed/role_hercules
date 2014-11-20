@@ -85,7 +85,9 @@ master {
     
     # How often to snapshot the actors state (note all messages will still
     # be persisted, this is only to speed up the recovery).
-    snapshot.interval = 3600     
+    snapshot.interval = 3600    
+
+    enable.persistence = true
 }
 
 
