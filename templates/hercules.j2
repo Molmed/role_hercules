@@ -37,7 +37,7 @@ notifications {
     smtp_host = "{{ notification_smtp_host  }}"
     smtp_port = {{ notification_smtp_port  }}
     prefix = "[Hercules]"
-    channels = ["critical"]
+    channels = ["critical", "progress"]
     retry_interval = 60
     # 0 = infinite retries
     num_retries = 0  
