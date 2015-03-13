@@ -29,6 +29,7 @@ defaultProgramConfigFile: "/srv/program_config/sisyphus.yml"
 # Seconds to wait before checking for runfolders again.
 checkForRunfoldersInterval: 120
 
+maximumNumberOfDemultiplexers: 2
 
 # Where to store e.g. downloaded rpms.
 hercules_tmp_path: /tmp/{{ hercules_user.name }}/files
