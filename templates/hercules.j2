@@ -53,9 +53,9 @@ notifications {
 #------------------------------------------------
 akka {
 
-	remote.netty.tcp.port=0
-	log-dead-letters = 1
-	actor.provider = "akka.cluster.ClusterActorRefProvider",
+    remote.netty.tcp.port=0
+    log-dead-letters = 1
+    actor.provider = "akka.cluster.ClusterActorRefProvider",
     extensions = ["akka.contrib.pattern.ClusterReceptionistExtension"]
     
     # Log settings
@@ -91,7 +91,7 @@ master {
     # be persisted, this is only to speed up the recovery).
     snapshot.interval = 3600    
 
-    enable.persistence = true
+    enable.persistence = false
 }
 
 
