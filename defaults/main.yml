@@ -46,4 +46,6 @@ hercules_git_url: https://github.com/Molmed/hercules
 # The git release to look for an available rpm on github for. 
 hercules_git_release: 0.1
 # If a RPM for the specified hercules release is available on github, the SHA256 hash should be specified here.
-hercules_git_release_sha256sum: .
+hercules_git_release_sha256sum: 5651e7990da466395c836ddf19c250c52472d2f19e843823fff0308e34186562
+
+

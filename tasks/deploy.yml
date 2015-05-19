@@ -1,7 +1,10 @@
 # hercules/tasks/deploy.yml
 
 - name: download hercules rpm from git
-  get_url: url={{ hercules_git_url }}/archive/{{ hercules_git_release }}.rpm dest={{ hercules_tmp_path }}/hercules-{{ hercules_git_release }}.rpm sha256sum={{ hercules_git_release_sha256sum }}
+  get_url: 
+    url={{ hercules_git_url }}/releases/download/v{{ hercules_git_release }}/hercules-{{ hercules_git_release }}-0.noarch.rpm 
+    dest={{ hercules_tmp_path }}/hercules-{{ hercules_git_release }}.rpm 
+    sha256sum={{ hercules_git_release_sha256sum }}
   ignore_errors: True 
   register: hercules_git_rpm
 
@@ -26,7 +29,7 @@
 
 - name: install the hercules rpm obtained from host
   yum: name={{ item }} state=present
-  when: hercules_dist_rpm|success
+  when: hercules_dist_rpm|success and hercules_git_rpm|failed
   with_items: 
     - "{{ hercules_tmp_path }}/{{ hercules_rpm_path|basename }}"
 
